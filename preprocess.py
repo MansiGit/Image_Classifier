@@ -1,21 +1,17 @@
-traindata='/content/drive/MyDrive/Final Project/digitdata/testimages'
+#Utility functions file 
 
-with open(traindata) as f:
-    lines = f.readlines()
+def read_data(f):
 
-dict_train={k:None for k in range(4000)}
-k=0
-arr=[]
+    dict_images={}
+    k=0
 
-for i in range(len(lines)):
-  arr=[]
-  while("#" in lines[i] or "+" in lines[i]):
-    arr.append(lines[i]) 
-    i+=1
-  if not("#" in lines[i] or "+" in lines[i]):
-    continue
-  dict_train[k]=arr
-  print(arr)
-  k+=1
+    lines=[line for line in open(f)]
 
-print(dict_train)
+    for i in range(0,len(lines),28):
+        dict_images[k]=lines[i:i+28]
+        k+=1
+
+    return dict_images
+
+traindata='./digitdata/trainingimages'
+read_data(traindata)
