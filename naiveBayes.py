@@ -27,7 +27,7 @@ class NaiveBayesClassifier(classificationMethod.ClassificationMethod):
     Outside shell to call your method. Do not modify this method.
     """  
       
-    self.features = trainingData[0].keys() # this could be useful for your code later...
+    self.features = list(trainingData[0].keys()) # this could be useful for your code later...
     
     if (self.automaticTuning):
         kgrid = [0.001, 0.01, 0.05, 0.1, 0.5, 1, 5, 10, 20, 50]
