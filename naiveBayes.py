@@ -57,15 +57,17 @@ class NaiveBayesClassifier(classificationMethod.ClassificationMethod):
     ###########################################
     frequency = util.Counter() #initialize a dict that counts the freq of each digit or each frew of T or false for faces
     for i in trainingLabels: frequency[i]+=1
-
-    #the values a feature can take , in this case it will be 0 or 1 as our images are binary
-    feat_values=[0,1]
     self.legalLabels=list(frequency.keys())
-    
-    # for i in frequency.keys():
-    #   frequency[i]=frequency[i]/len(trainingData) #for face data {0: 0.51483894234 1: 49.324892893643}
-    
     self.prior=util.normalize(frequency)
+
+    # the values a feature can take , in this case it will be 0 or 1 as our images are binary
+    # for enhanced features it is a range [0..25] for face and [0..49] for digit
+    m=0
+    for i in range(len(trainingData)):
+      x=max(trainingData[i].values())
+      if(x>m): m=x
+    #print("-------",m)
+    feat_values=[i for i in range(m)]
 
     ###########################################
     # Set Occurances of all counters = 0
@@ -133,7 +135,10 @@ class NaiveBayesClassifier(classificationMethod.ClassificationMethod):
       logJoint[label] = math.log(self.prior[label])
       for feat, value in datum.items():
         phi = self.conditionalProbabilities[feat,label][value]     # Get the data we need from the sec dict
+        if(phi<=0): phi=1.0000000001
         logJoint[label]= logJoint[label] + math.log( phi) # Calculate the joint probability 
+        
+
       #logJoint[label]= probs
 
     #"*** YOUR CODE HERE ***"
