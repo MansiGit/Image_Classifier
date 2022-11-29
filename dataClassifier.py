@@ -2,13 +2,14 @@
 # code for data classification
 
 import mostFrequent
-import naiveBayes
+import naiveBayes1 as naiveBayes
 import perceptron
 import mira
 import minicontest
 import samples
 import sys
 import util
+import time
 
 TEST_SET_SIZE = 100
 DIGIT_DATUM_WIDTH=28
@@ -113,7 +114,7 @@ def analysis(classifier, guesses, testLabels, testData, rawTestData, printImage)
           print("Mistake on example %d" % i) 
           print("Predicted %d; truth is %d" % (prediction, truth))
           print("Image: ")
-          print(rawTestData[i])
+          #print(rawTestData[i])
           break
 
 
@@ -329,7 +330,14 @@ def runClassifier(args, options):
     printImage(features_odds)
 
 if __name__ == '__main__':
-  # Read input
-  args, options = readCommand( sys.argv[1:] ) 
+  # Read inputt
   # Run classifier
-  runClassifier(args, options)
+  t=0
+  for i in range(10):
+    t+=500
+    st=time.process_time()
+    args, options = readCommand(['-d','digits','-c','naiveBayes','-t', str(t),'-k','1','-a'])
+    runClassifier(args, options)
+    et=time.process_time()
+    print("Time: ",et-st)
+#python dataClassifier.py -c naiveBayes -d digits -t 1000 -f -o -1 3 -2 6 -k 2.5

@@ -14,7 +14,9 @@ class NaiveBayesClassifier(classificationMethod.ClassificationMethod):
     self.type = "naivebayes"
     self.k = 0.001 # this is the smoothing parameter, ** use it in your train method **
     self.automaticTuning = False # Look at this flag to decide whether to choose k automatically ** use this in your train method **
-    self.dict_phi_value_per_feature= None
+    self.conditional_prob_per_feat= None
+    self.prior =None
+
 
   def setSmoothing(self, k):
     """
@@ -50,39 +52,59 @@ class NaiveBayesClassifier(classificationMethod.ClassificationMethod):
     To get the list of all possible features or labels, use self.features and 
     self.legalLabels.
     """
+    ###########################################
+    # Calculate the prior probabilities
+    ###########################################
     frequency = util.Counter() #initialize a dict that counts the freq of each digit or each frew of T or false for faces
     for i in trainingLabels: frequency[i]+=1
 
-    for i in frequency.keys():
-      frequency[i]=frequency[i]/len(trainingData) #for face data {0: 0.51483894234 1: 49.324892893643}
+    #the values a feature can take , in this case it will be 0 or 1 as our images are binary
+    feat_values=[0,1]
+    self.legalLabels=list(frequency.keys())
     
-    dict_trainingdata_by_label={key: list() for key in trainingLabels}
+    # for i in frequency.keys():
+    #   frequency[i]=frequency[i]/len(trainingData) #for face data {0: 0.51483894234 1: 49.324892893643}
     
-    #segregate training data by label 
-    for i in range(len(trainingData)):
-      dict_trainingdata_by_label[trainingLabels[i]].append(trainingData[i])
-   
-    ###############################
-    # Finding phi values for each pixel for each label
-    ###############################
-    dict_phi_value_per_feature={key: util.Counter() for key in trainingLabels}
-    
-    for label in dict_trainingdata_by_label.keys():
-      temp=util.Counter()
-      cnt=0
-      for d in dict_trainingdata_by_label[label]:
-        cnt+=1
-        for key,value in d:
-          if(value>0):
-            temp[key]+=1  
-      for loc,freq in temp:
-        if(freq==0):
-          freq=self.k
-        temp[loc]=float(freq/cnt)
-      dict_phi_value_per_feature.append(temp)
+    self.prior=util.normalize(frequency)
 
-    self.dict_phi_value_per_feature=dict_phi_value_per_feature
-    #"*** YOUR CODE HERE ***"
+    ###########################################
+    # Set Occurances of all counters = 0
+    # we will use maintain a Occurance counter that will 
+    # count the number of occurance of 0 or 1 given the label assigned to the datum
+    # OccuranceCounter = {(feat,label):
+    #                           {0:number of occurances of 0 given label,
+    #                            1:number of occurances of 1 given label}
+    #                    } 
+    ###########################################
+    OccuranceCounter = {}
+    for label in self.legalLabels:
+      for feature in self.features:
+        tempCounter = util.Counter()
+        for _ in feat_values: tempCounter[_] = 0
+        OccuranceCounter[(feature, label)] = tempCounter
+
+    ###########################################
+    # Segregate training data by label and 
+    # Count the occurance of each feature
+    ###########################################
+    for i in range(len(trainingData)):
+      featureValues = trainingData[i]
+      label = trainingLabels[i]
+      for feature in featureValues.keys():
+        OccuranceCounter[(feature, label)][featureValues[feature]] += 1
+    
+    ###########################################
+    # Smooth the occurances as 0 occurances can create a problem in multiplication further on
+    ###########################################
+    conditionalProbabilities_perfeature_perlabel = {}
+    for label in self.legalLabels:
+      for feature in self.features:
+        CounterTuple = OccuranceCounter[feature, label]
+        CounterTuple.incrementAll(CounterTuple.keys(), self.k)
+        conditionalProbabilities_perfeature_perlabel[feature, label] = util.normalize(CounterTuple)
+    self.conditionalProbabilities = conditionalProbabilities_perfeature_perlabel
+
+#"*** YOUR CODE HERE ***"
     #util.raiseNotDefined()
         
   def classify(self, testData):
@@ -107,7 +129,15 @@ class NaiveBayesClassifier(classificationMethod.ClassificationMethod):
     """
     logJoint = util.Counter()
     
+    for label in self.legalLabels:
+      logJoint[label] = math.log(self.prior[label])
+      for feat, value in datum.items():
+        phi = self.conditionalProbabilities[feat,label][value]     # Get the data we need from the sec dict
+        logJoint[label]= logJoint[label] + math.log( phi) # Calculate the joint probability 
+      #logJoint[label]= probs
+
     #"*** YOUR CODE HERE ***"
+
     #util.raiseNotDefined()
     
     return logJoint
