@@ -10,6 +10,7 @@ import minicontest
 import samples
 import sys
 import util
+import time
 
 TEST_SET_SIZE = 100
 DIGIT_DATUM_WIDTH=28
@@ -61,8 +62,19 @@ def enhancedFeatureExtractorDigit(datum):
   
   ##
   """
-  features =  basicFeatureExtractorDigit(datum)
+  block_size = 4
+  features = util.Counter()
+  for x in range(0, DIGIT_DATUM_WIDTH, block_size):
+    for y in range(0, DIGIT_DATUM_HEIGHT, block_size):
+      for x1 in range(block_size):
+        for y1 in range(block_size):
+          if datum.getPixel(x+x1, y+y1) > 0:
+            features[(x,y)] += 1 # counting the number of pixels in 7x7 grid
+          else:
+            features[(x,y)] += 0
+  return features
 
+  
   "*** YOUR CODE HERE ***"
   
   return features
@@ -80,7 +92,16 @@ def enhancedFeatureExtractorFace(datum):
   Your feature extraction playground for faces.
   It is your choice to modify this.
   """
-  features =  basicFeatureExtractorFace(datum)
+  block_size = 5
+  features = util.Counter()
+  for x in range(0, FACE_DATUM_WIDTH, block_size):
+    for y in range(0, FACE_DATUM_HEIGHT, block_size):
+      for x1 in range(block_size):
+        for y1 in range(block_size):
+          if datum.getPixel(x+x1, y+y1) > 0:
+            features[(x,y)] += 1 # counting the number of pixels in 5x5 grid
+          else:
+            features[(x,y)] += 0
   return features
 
 def analysis(classifier, guesses, testLabels, testData, rawTestData, printImage):
@@ -114,7 +135,7 @@ def analysis(classifier, guesses, testLabels, testData, rawTestData, printImage)
           print("Mistake on example %d" % i) 
           print("Predicted %d; truth is %d" % (prediction, truth))
           print("Image: ")
-          print(rawTestData[i])
+          #print(rawTestData[i])
           break
 
 
@@ -302,6 +323,7 @@ def runClassifier(args, options):
   # Extract features
   print("Extracting features...")
   trainingData = list(map(featureFunction, rawTrainingData))
+  print("here")
   validationData = list(map(featureFunction, rawValidationData))
   testData = list(map(featureFunction, rawTestData))
   
@@ -311,11 +333,11 @@ def runClassifier(args, options):
   print("Validating...")
   guesses = classifier.classify(validationData)
   correct = [guesses[i] == validationLabels[i] for i in range(len(validationLabels))].count(True)
-  print(str(correct), ("correct out of " + str(len(validationLabels)) + " (%.1f%%).") % (100.0 * correct / len(validationLabels)))
+  print(str(correct), ("correct out of " + str(len(validationLabels)) + ": %.1f%%") % (100.0 * correct / len(validationLabels)))
   print("Testing...")
   guesses = classifier.classify(testData)
   correct = [guesses[i] == testLabels[i] for i in range(len(testLabels))].count(True)
-  print(str(correct), ("correct out of " + str(len(testLabels)) + " (%.1f%%).") % (100.0 * correct / len(testLabels)))
+  print(str(correct), ("correct out of " + str(len(testLabels)) + ": %.1f%%") % (100.0 * correct / len(testLabels)))
   analysis(classifier, guesses, testLabels, testData, rawTestData, printImage)
   
   # do odds ratio computation if specified at command line
@@ -331,7 +353,14 @@ def runClassifier(args, options):
     printImage(features_odds)
 
 if __name__ == '__main__':
-  # Read input
-  args, options = readCommand( sys.argv[1:] ) 
+  # Read inputt
   # Run classifier
-  runClassifier(args, options)
+  t=0
+  for i in range(1):
+    t+=5000
+    st=time.process_time()
+    args, options = readCommand(['-d','digits','-c','naiveBayes','-t', str(t),'-k','1','-f'])
+    runClassifier(args, options)
+    et=time.process_time()
+    print("Time: ",et-st)
+#python dataClassifier.py -c naiveBayes -d digits -t 1000 -f -o -1 3 -2 6 -k 2.5
