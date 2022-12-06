@@ -19,7 +19,6 @@ class PerceptronClassifier:
         The training loop for the perceptron will pass through the specified training data multiple times and 
         will update the weight vector for each label based on errors in classificattion
         """
-
         self.features = trainingData[0].keys() 
 
         for iteration in range(self.max_iterations):
@@ -33,7 +32,6 @@ class PerceptronClassifier:
                 #weights vector adjustment
                   self.weights[trainingLabels[i]] += trainingData[i] # encourage the actual answer : add weight phi to weight vector 
                   self.weights[y_value] -= trainingData[i] #punish the incorrect guess's  weight vector
-
 
            
     def classify(self, data, prin = False):
@@ -51,6 +49,7 @@ class PerceptronClassifier:
         """
         We get a list of 100 features with the highest weight
         """
+        
         featuresWeights = []
 
         weights = self.weights[label]

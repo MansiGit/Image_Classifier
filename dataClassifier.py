@@ -3,7 +3,7 @@
 
 import mostFrequent
 import naiveBayes
-import question3
+import knnClassifier
 import perceptron
 import mira
 import minicontest
@@ -180,7 +180,7 @@ def readCommand( argv ):
   from optparse import OptionParser  
   parser = OptionParser(USAGE_STRING)
   
-  parser.add_option('-c', '--classifier', help=default('The type of classifier'), choices=['mostFrequent', 'nb', 'naiveBayes', 'perceptron', 'mira', 'minicontest', 'question3'], default='mostFrequent')
+  parser.add_option('-c', '--classifier', help=default('The type of classifier'), choices=['mostFrequent', 'nb', 'naiveBayes', 'perceptron', 'mira', 'minicontest', 'knnClassifier'], default='mostFrequent')
   parser.add_option('-d', '--data', help=default('Dataset to use'), choices=['digits', 'faces'], default='digits')
   parser.add_option('-t', '--training', help=default('The size of the training set'), default=100, type="int")
   parser.add_option('-f', '--features', help=default('Whether to use enhanced features'), default=False, action="store_true")
@@ -262,8 +262,8 @@ def readCommand( argv ):
     if (options.autotune):
         print("using automatic tuning for MIRA")
         classifier.automaticTuning = True
-  elif(options.classifier == "question3"):
-    classifier = question3.kNearestNeighborsClassifier(legalLabels, options.iterations)
+  elif(options.classifier == "knnClassifier"):
+    classifier = knnClassifier.kNearestNeighborsClassifier()
     
   elif(options.classifier == 'minicontest'):
     classifier = minicontest.contestClassifier(legalLabels)
@@ -327,19 +327,32 @@ def runClassifier(args, options):
   validationData = list(map(featureFunction, rawValidationData))
   testData = list(map(featureFunction, rawTestData))
   
-  # Conduct training and testing
-  print("Training...")
-  classifier.train(trainingData, trainingLabels, validationData, validationLabels)
-  print("Validating...")
-  guesses = classifier.classify(validationData)
-  correct = [guesses[i] == validationLabels[i] for i in range(len(validationLabels))].count(True)
-  print(str(correct), ("correct out of " + str(len(validationLabels)) + ": %.1f%%") % (100.0 * correct / len(validationLabels)))
-  print("Testing...")
-  guesses = classifier.classify(testData)
-  correct = [guesses[i] == testLabels[i] for i in range(len(testLabels))].count(True)
-  print(str(correct), ("correct out of " + str(len(testLabels)) + ": %.1f%%") % (100.0 * correct / len(testLabels)))
-  analysis(classifier, guesses, testLabels, testData, rawTestData, printImage)
-  
+  # if classifier == KNN
+  print(classifier)
+  print(type(classifier))
+  print(options.classifier)
+
+  if(options.classifier == "knnClassifier"):
+    print("correct place")
+    classifier.preprocessData()
+    print("done")
+  else:
+    # Conduct training and testing
+    print("Training...")
+    print("class")
+    print(classifier)
+    classifier.train(trainingData, trainingLabels, validationData, validationLabels)
+    print("Validating...")
+    guesses = classifier.classify(validationData)
+    correct = [guesses[i] == validationLabels[i] for i in range(len(validationLabels))].count(True)
+    print(str(correct), ("correct out of " + str(len(validationLabels)) + ": %.1f%%") % (100.0 * correct / len(validationLabels)))
+    print("Testing...")
+    guesses = classifier.classify(testData)
+    
+    correct = [guesses[i] == testLabels[i] for i in range(len(testLabels))].count(True)
+    print(str(correct), ("correct out of " + str(len(testLabels)) + ": %.1f%%") % (100.0 * correct / len(testLabels)))
+    analysis(classifier, guesses, testLabels, testData, rawTestData, printImage)
+    
   # do odds ratio computation if specified at command line
   if((options.odds) & (options.classifier != "mostFrequent")):
     label1, label2 = options.label1, options.label2
@@ -359,8 +372,11 @@ if __name__ == '__main__':
   for i in range(1):
     t+=5000
     st=time.process_time()
-    args, options = readCommand(['-d','digits','-c','naiveBayes','-t', str(t),'-k','1','-f'])
+    args, options = readCommand(['-d','digits','-c','knnClassifier','-t', str(t),'-k','1','-f'])
+    # MAIN RUN : args, options = readCommand( sys.argv[1:] )
+
     runClassifier(args, options)
+    
     et=time.process_time()
     print("Time: ",et-st)
 #python dataClassifier.py -c naiveBayes -d digits -t 1000 -f -o -1 3 -2 6 -k 2.5
