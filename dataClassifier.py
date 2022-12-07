@@ -11,6 +11,7 @@ import samples
 import sys
 import util
 import time
+import numpy as np
 
 TEST_SET_SIZE = 100
 DIGIT_DATUM_WIDTH=28
@@ -276,6 +277,8 @@ def readCommand( argv ):
   args['classifier'] = classifier
   args['featureFunction'] = featureFunction
   args['printImage'] = printImage
+
+
   
   return args, options
 
@@ -328,29 +331,23 @@ def runClassifier(args, options):
   testData = list(map(featureFunction, rawTestData))
   
   # if classifier == KNN
-  print(classifier)
-  print(type(classifier))
-  print(options.classifier)
 
   if(options.classifier == "knnClassifier"):
-    print("correct place")
     classifier.preprocessData()
-    print("done")
   else:
     # Conduct training and testing
     print("Training...")
-    print("class")
-    print(classifier)
     classifier.train(trainingData, trainingLabels, validationData, validationLabels)
+
     print("Validating...")
     guesses = classifier.classify(validationData)
-    correct = [guesses[i] == validationLabels[i] for i in range(len(validationLabels))].count(True)
-    print(str(correct), ("correct out of " + str(len(validationLabels)) + ": %.1f%%") % (100.0 * correct / len(validationLabels)))
+    correct1 = [guesses[i] == validationLabels[i] for i in range(len(validationLabels))].count(True)
+    print(str(correct1), ("correct out of " + str(len(validationLabels)) + ": %.1f%%") % (100.0 * correct1 / len(validationLabels)))
+
     print("Testing...")
     guesses = classifier.classify(testData)
-    
-    correct = [guesses[i] == testLabels[i] for i in range(len(testLabels))].count(True)
-    print(str(correct), ("correct out of " + str(len(testLabels)) + ": %.1f%%") % (100.0 * correct / len(testLabels)))
+    correct2 = [guesses[i] == testLabels[i] for i in range(len(testLabels))].count(True)
+    print(str(correct2), ("correct out of " + str(len(testLabels)) + ": %.1f%%") % (100.0 * correct2 / len(testLabels)))
     analysis(classifier, guesses, testLabels, testData, rawTestData, printImage)
     
   # do odds ratio computation if specified at command line
@@ -365,18 +362,59 @@ def runClassifier(args, options):
     print(string3)
     printImage(features_odds)
 
+  return correct1, correct2
+
 if __name__ == '__main__':
   # Read inputt
   # Run classifier
-  t=0
-  for i in range(1):
-    t+=5000
-    st=time.process_time()
-    args, options = readCommand(['-d','digits','-c','knnClassifier','-t', str(t),'-k','1','-f'])
-    # MAIN RUN : args, options = readCommand( sys.argv[1:] )
-
-    runClassifier(args, options)
+  # t=0
+  # for i in range(10):
+  #   t+=500
+  #   st=time.process_time()
+  #   args, options = readCommand(['-d','digits','-c','perceptron','-t', str(t),'-k','1','-f'])
+  #   # MAIN RUN : args, options = readCommand( sys.argv[1:] )
     
-    et=time.process_time()
-    print("Time: ",et-st)
+  #   correct1, correct2 = runClassifier(args, options)
+  #   print("correcttt")
+  #   print(correct1)
+  #   print(correct2)
+        
+    
+  #   et=time.process_time()
+  #   print("Time: ",et-st)
+
+  t=0
+  validating_mean_acc = []
+  validating_std_acc = []
+  test_mean_acc = []
+  test_std_acc = []
+
+  # currently checking only for 10% data
+  for i in range(10):
+    t += 500
+    # MAIN RUN : args, options = readCommand( sys.argv[1:] )
+    validating_acc = []
+    test_acc = []
+
+    for j in range(5):
+      st=time.process_time()
+      args, options = readCommand(['-d','digits','-c','perceptron','-t', str(t),'-k','1','-f'])
+      correct1, correct2 = runClassifier(args, options)
+      et=time.process_time()
+      print("Time: ",et-st)
+      validating_acc.append(correct1)
+      test_acc.append(correct2)
+
+    validating_mean_acc.append(np.mean(validating_acc))
+    validating_std_acc.append(np.std(validating_acc))
+    test_mean_acc.append(np.mean(test_acc))
+    test_std_acc.append(np.std(test_acc))
+
+  print("STD, MEAN")
+  print(validating_mean_acc)
+  print(validating_std_acc)
+  print(test_mean_acc)
+  print(test_std_acc)
+      
 #python dataClassifier.py -c naiveBayes -d digits -t 1000 -f -o -1 3 -2 6 -k 2.5
+# runClassifier(args, options)
