@@ -326,7 +326,12 @@ def runClassifier(args, options):
   print("here")
   validationData = list(map(featureFunction, rawValidationData))
   testData = list(map(featureFunction, rawTestData))
-  
+  f = open("testdata_faces.txt", "a")
+  f.write("\n,".join(str(item) for item in testData))
+  f.close()
+  f = open("traindata_faces.txt", "a")
+  f.write('\n,'.join(str(item) for item in trainingData))
+  f.close()
   # if classifier == KNN
   print(classifier)
   print(type(classifier))
@@ -370,9 +375,9 @@ if __name__ == '__main__':
   # Run classifier
   t=0
   for i in range(1):
-    t+=5000
+    t+=451
     st=time.process_time()
-    args, options = readCommand(['-d','digits','-c','knnClassifier','-t', str(t),'-k','1','-f'])
+    args, options = readCommand(['-d','faces','-c','perceptron','-t', str(t),'-k','1','-f'])
     # MAIN RUN : args, options = readCommand( sys.argv[1:] )
 
     runClassifier(args, options)
