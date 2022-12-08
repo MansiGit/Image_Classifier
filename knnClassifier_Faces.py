@@ -80,7 +80,7 @@ class kNearestNeighborsClassifier:
         y_test = test_label_list[:100]
 
 
-        kVals = np.arange(3,200,2)
+        kVals = np.arange(3,107,2)
         accuracies = []
         for k in kVals:
             model = KNN(K = k)
