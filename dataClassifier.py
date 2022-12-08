@@ -12,6 +12,7 @@ import sys
 import util
 import time
 import numpy as np
+import random
 
 TEST_SET_SIZE = 100
 DIGIT_DATUM_WIDTH=28
@@ -191,6 +192,7 @@ def readCommand( argv ):
   parser.add_option('-k', '--smoothing', help=default("Smoothing parameter (ignored when using --autotune)"), type="float", default=2.0)
   parser.add_option('-a', '--autotune', help=default("Whether to automatically tune hyperparameters"), default=False, action="store_true")
   parser.add_option('-i', '--iterations', help=default("Maximum iterations to run training"), default=3, type="int")
+  parser.add_option('-r', '--randomizedselection', help=default("Use randomized data points"), default=False, action="store_true")
 
   options, otherjunk = parser.parse_args(argv)
   if len(otherjunk) != 0: raise Exception('Command line input not understood: ' + str(otherjunk))
@@ -304,8 +306,14 @@ def runClassifier(args, options):
   classifier = args['classifier']
   printImage = args['printImage']
       
-  # Load data  
+  # Load data 
   numTraining = options.training
+
+  if(options.randomizedselection and options.data=='faces'):
+     numTraining = 451
+  if(options.randomizedselection and options.data=='digits'):
+     numTraining = 5000
+     
 
   if(options.data=="faces"):
     rawTrainingData = samples.loadDataFile("facedata/facedatatrain", numTraining,FACE_DATUM_WIDTH,FACE_DATUM_HEIGHT)
@@ -326,10 +334,24 @@ def runClassifier(args, options):
   # Extract features
   print("Extracting features...")
   trainingData = list(map(featureFunction, rawTrainingData))
-  print("here")
   validationData = list(map(featureFunction, rawValidationData))
   testData = list(map(featureFunction, rawTestData))
   
+  if(options.randomizedselection):
+    print("Using Randomized selection: selecting {} random data points from {}".format(options.training,numTraining))
+    merged=list(map(lambda x, y:(x,y), trainingData, trainingLabels))
+    random.shuffle(merged)
+    trainingData,trainingLabels=[],[]
+    for i in range(options.training):
+      trainingData.append(merged[i][0])
+      trainingLabels.append(merged[i][1])
+
+  # f = open("testdata_faces.txt", "a")
+  # f.write("\n,".join(str(item) for item in testData))
+  # f.close()
+  # f = open("traindata_faces.txt", "a")
+  # f.write('\n,'.join(str(item) for item in trainingData))
+  # f.close()
   # if classifier == KNN
 
   if(options.classifier == "knnClassifier"):
@@ -398,7 +420,7 @@ if __name__ == '__main__':
 
     for j in range(5):
       st=time.process_time()
-      args, options = readCommand(['-d','faces','-c','perceptron','-t', str(t),'-k','1','-f'])
+      args, options = readCommand(['-d','digits','-c','nb','-t', str(t),'-k','1','-f','-r'])
       correct1, correct2 = runClassifier(args, options)
       et=time.process_time()
       print("Time: ",et-st)
@@ -410,9 +432,10 @@ if __name__ == '__main__':
     test_mean_acc.append(np.mean(test_acc))
     test_std_acc.append(np.std(test_acc))
 
-  print("STD, MEAN")
+  print("Validation : MEAN, STD")
   print(validating_mean_acc)
   print(validating_std_acc)
+  print("Testing : MEAN, STD")
   print(test_mean_acc)
   print(test_std_acc)
       
