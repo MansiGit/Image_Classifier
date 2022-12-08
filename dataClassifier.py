@@ -182,7 +182,7 @@ def readCommand( argv ):
   from optparse import OptionParser  
   parser = OptionParser(USAGE_STRING)
   
-  parser.add_option('-c', '--classifier', help=default('The type of classifier'), choices=['mostFrequent', 'nb', 'naiveBayes', 'perceptron', 'mira', 'minicontest', 'knnClassifier'], default='mostFrequent')
+  parser.add_option('-c', '--classifier', help=default('The type of classifier'), choices=['nb', 'naiveBayes', 'perceptron', 'minicontest', 'knnClassifier'], default='naiveBayes')
   parser.add_option('-d', '--data', help=default('Dataset to use'), choices=['digits', 'faces'], default='digits')
   parser.add_option('-t', '--training', help=default('The size of the training set'), default=100, type="int")
   parser.add_option('-f', '--features', help=default('Whether to use enhanced features'), default=False, action="store_true")
@@ -248,9 +248,7 @@ def readCommand( argv ):
       print(USAGE_STRING)
       sys.exit(2)
 
-  if(options.classifier == "mostFrequent"):
-    classifier = mostFrequent.MostFrequentClassifier(legalLabels)
-  elif(options.classifier == "naiveBayes" or options.classifier == "nb"):
+  if(options.classifier == "naiveBayes" or options.classifier == "nb"):
     classifier = naiveBayes.NaiveBayesClassifier(legalLabels)
     classifier.setSmoothing(options.smoothing)
     if (options.autotune):
@@ -260,11 +258,6 @@ def readCommand( argv ):
         print("using smoothing parameter k=%f for naivebayes" %  options.smoothing)
   elif(options.classifier == "perceptron"):
     classifier = perceptron.PerceptronClassifier(legalLabels,options.iterations)
-  elif(options.classifier == "mira"):
-    classifier = mira.MiraClassifier(legalLabels, options.iterations)
-    if (options.autotune):
-        print("using automatic tuning for MIRA")
-        classifier.automaticTuning = True
   elif(options.classifier == "knnClassifier"):
     if(options.data == "faces"):
       classifier = knnClassifier_Faces.kNearestNeighborsClassifier()
@@ -375,17 +368,6 @@ def runClassifier(args, options):
     print(str(correct2), ("correct out of " + str(len(testLabels)) + ": %.1f%%") % (100.0 * correct2 / len(testLabels)))
     analysis(classifier, guesses, testLabels, testData, rawTestData, printImage)
     
-  # do odds ratio computation if specified at command line
-  if((options.odds) & (options.classifier != "mostFrequent")):
-    label1, label2 = options.label1, options.label2
-    features_odds = classifier.findHighOddsFeatures(label1,label2)
-    if(options.classifier == "naiveBayes" or options.classifier == "nb"):
-      string3 = "=== Features with highest odd ratio of label %d over label %d ===" % (label1, label2)
-    else:
-      string3 = "=== Features for which weight(label %d)-weight(label %d) is biggest ===" % (label1, label2)    
-      
-    print(string3)
-    printImage(features_odds)
 
   return correct1, correct2
 
