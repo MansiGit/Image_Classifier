@@ -138,6 +138,8 @@ class kNearestNeighborsClassifier:
         plt.xlabel("K Value") 
         plt.ylabel("Accuracy")
 
+        return str(max_index*2+3), acc
+
 class KNN:
     def __init__(self, K=3):
         self.K = K
