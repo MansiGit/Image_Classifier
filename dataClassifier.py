@@ -346,12 +346,12 @@ def runClassifier(args, options):
       trainingData.append(merged[i][0])
       trainingLabels.append(merged[i][1])
 
-  # f = open("testdata_faces.txt", "a")
-  # f.write("\n,".join(str(item) for item in testData))
-  # f.close()
-  # f = open("traindata_faces.txt", "a")
-  # f.write('\n,'.join(str(item) for item in trainingData))
-  # f.close()
+  f = open("testdata_faces_simple.txt", "a")
+  f.write("\n,".join(str(item) for item in testData))
+  f.close()
+  f = open("traindata_faces_simple.txt", "a")
+  f.write('\n,'.join(str(item) for item in trainingData))
+  f.close()
   # if classifier == KNN
 
   if(options.classifier == "knnClassifier"):
@@ -412,15 +412,15 @@ if __name__ == '__main__':
   test_std_acc = []
 
   # currently checking only for 10% data
-  for i in range(10):
-    t += 500
+  for i in range(1):
+    t += 451
     # MAIN RUN : args, options = readCommand( sys.argv[1:] )
     validating_acc = []
     test_acc = []
 
-    for j in range(5):
+    for j in range(1):
       st=time.process_time()
-      args, options = readCommand(['-d','digits','-c','nb','-t', str(t),'-k','1','-f','-r'])
+      args, options = readCommand(['-d','faces','-c','nb','-t', str(t),'-k','1',])
       correct1, correct2 = runClassifier(args, options)
       et=time.process_time()
       print("Time: ",et-st)
