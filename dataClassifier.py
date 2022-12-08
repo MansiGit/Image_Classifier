@@ -1,13 +1,11 @@
 # This file contains feature extraction methods and harness 
 # code for data classification
 
-import mostFrequent
 import naiveBayes
 import knnClassifier
 import knnClassifier_Digits
 import knnClassifier_Faces
 import perceptron
-import mira
 import minicontest
 import samples
 import sys
