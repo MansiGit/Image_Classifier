@@ -405,9 +405,9 @@ if __name__ == '__main__':
 
     for j in range(5):
       st=time.process_time()
-      args, options = readCommand(['-d','faces','-c','perceptron','-t', str(t),'-k','1','-f','-r'])
-      print(args)
-      print(options)
+      args, options = readCommand(['-d','faces','-c','knnClassifier','-t', str(t),'-k','1','-f','-r'])
+      #print(args)
+      #print(options)
       correct1, correct2 = runClassifier(args, options)
       et=time.process_time()
       print("Time: ",et-st)
