@@ -4,6 +4,8 @@
 import mostFrequent
 import naiveBayes
 import knnClassifier
+import knnClassifier_Digits
+import knnClassifier_Faces
 import perceptron
 import mira
 import minicontest
@@ -266,8 +268,10 @@ def readCommand( argv ):
         print("using automatic tuning for MIRA")
         classifier.automaticTuning = True
   elif(options.classifier == "knnClassifier"):
-    classifier = knnClassifier.kNearestNeighborsClassifier()
-    
+    if(options.data == "faces"):
+      classifier = knnClassifier_Faces.kNearestNeighborsClassifier()
+    else:
+      classifier = knnClassifier_Digits.kNearestNeighborsClassifier()
   elif(options.classifier == 'minicontest'):
     classifier = minicontest.contestClassifier(legalLabels)
   else:
@@ -420,7 +424,7 @@ if __name__ == '__main__':
 
     for j in range(5):
       st=time.process_time()
-      args, options = readCommand(['-d','digits','-c','nb','-t', str(t),'-k','1','-f','-r'])
+      args, options = readCommand(['-d','faces','-c','knnClassifier','-t', str(t),'-k','1','-f','-r'])
       correct1, correct2 = runClassifier(args, options)
       et=time.process_time()
       print("Time: ",et-st)
