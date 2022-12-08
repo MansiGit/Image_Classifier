@@ -22,23 +22,13 @@ class kNearestNeighborsClassifier:
     #     self.weights = {}
           
     def preprocessData(self):
-        txt_file = open("traindata.txt", "r")
-        file_content = txt_file.read()
-        file_content = ast.literal_eval(file_content)
-
-        main_list=[]
-        for i in range(len(file_content)):
-            small_matrix = np.array([0]*784).reshape(28,28)
-            print("this is matrix"+str(i))
-            for j in range(28):
-                for k in range(28):
-                    small_matrix[k][j]=file_content[i][(j, k)]
-            main_list.append(small_matrix)
-
+        txt_file = open("KNN_DATA/traindata_digits_preprocessed.txt", "r")
+        new_file_content = txt_file.read()
+        main_list = ast.literal_eval(new_file_content)
         for i in range(len(main_list)):
-            main_list[i] = main_list[i].flatten()
+            main_list[i] = np.array(main_list[i])
 
-        label_txt_file = open("traininglabels", "r")
+        label_txt_file = open("KNN_DATA/traininglabels", "r")
         label_file_content = label_txt_file.read()
         label_file_content=label_file_content.split('\n')
         #label_file_content = ast.literal_eval(label_file_content)
@@ -53,29 +43,15 @@ class kNearestNeighborsClassifier:
         
 
         # TESTDATA
-        txt_file = open("testdata.txt", "r")
-        file_content = txt_file.read()
+        txt_file = open("KNN_DATA/testdata_digits_preprocessed.txt", "r")
+        new_file_content = txt_file.read()
+        test_main_list = ast.literal_eval(new_file_content)
 
-        file_content = ast.literal_eval(file_content)
-
-        #file_content = [n for n in file_content]
-        #file_content
-
-        test_main_list=[]
-        for i in range(len(file_content)):
-            test_small_matrix = np.array([0]*784).reshape(28,28)
-            print("this is matrix"+str(i))
-            for j in range(28):
-                for k in range(28):
-                    test_small_matrix[k][j]=file_content[i][(j, k)]
-            test_main_list.append(test_small_matrix)
-
-        
         for i in range(len(test_main_list)):
-            test_main_list[i] = test_main_list[i].flatten()
-            #main_list[i]=main_list[i].tolist()
+            test_main_list[i] = np.array(test_main_list[i])
 
-        test_label_txt_file = open("testlabels", "r")
+
+        test_label_txt_file = open("KNN_DATA/testlabels", "r")
         test_label_file_content = test_label_txt_file.read()
         test_label_file_content=test_label_file_content.split('\n')
 
