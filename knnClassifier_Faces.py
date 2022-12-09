@@ -8,6 +8,7 @@ import matplotlib
 import math
 import ast
 import numpy as np
+import random
 
 import operator 
 from operator import itemgetter
@@ -22,7 +23,7 @@ class kNearestNeighborsClassifier:
     #     self.k = k
     #     self.weights = {}
           
-    def preprocessData(self):
+    def preprocessData(self, trainingNumber):
         txt_file = open("KNN_DATA/traindata_faces_preprocessed.txt", "r")
         new_file_content = txt_file.read()
         main_list = ast.literal_eval(new_file_content)
@@ -43,6 +44,14 @@ class kNearestNeighborsClassifier:
 
         
 
+        merged = list(map(lambda x, y:(x,y), main_list, label_list))
+        random.shuffle(merged)
+        main_list,label_list=[],[]
+        for i in range(trainingNumber):
+            main_list.append(merged[i][0])
+            label_list.append(merged[i][1])
+
+        
         # TESTDATA
         txt_file = open("KNN_DATA/testdata_faces_preprocessed.txt", "r")
         new_file_content = txt_file.read()
@@ -63,9 +72,11 @@ class kNearestNeighborsClassifier:
         x=0
         some_digit = test_main_list[x]
         some_digit_image = some_digit.reshape(60, 70)
-        plt.imshow(some_digit_image, cmap=matplotlib.cm.binary)
+        # uncomment later
+        # plt.imshow(some_digit_image, cmap=matplotlib.cm.binary)
         #plt.axis(“off”)
-        plt.show()
+        # uncomment later
+        # plt.show()
         print(" ")
         print("Actual Value: "+str(test_label_list[x]))
 
@@ -102,9 +113,11 @@ class kNearestNeighborsClassifier:
         x=67
         some_digit = test_main_list[x]
         some_digit_image = some_digit.reshape(60, 70)
-        plt.imshow(some_digit_image, cmap=matplotlib.cm.binary)
+        # uncomment later
+        # plt.imshow(some_digit_image, cmap=matplotlib.cm.binary)
         #plt.axis(“off”)
-        plt.show()
+        # uncomment later
+        # plt.show()
         print(" ")
         print("Actual Value: "+str(test_label_list[x]))
         print("Predicted Value: "+str(pred[x]))
@@ -113,6 +126,8 @@ class kNearestNeighborsClassifier:
         plt.plot(kVals, accuracies) 
         plt.xlabel("K Value") 
         plt.ylabel("Accuracy")
+
+        return acc, 0
 
 class KNN:
     def __init__(self, K=3):

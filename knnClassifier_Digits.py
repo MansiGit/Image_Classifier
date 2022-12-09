@@ -4,13 +4,32 @@ import matplotlib.pyplot as plt
 import matplotlib
 import math
 import ast
+<<<<<<< HEAD
+=======
+import numpy as np
+import random
+
+>>>>>>> 533a4092bd448d3ddf71987ded1b0a5009f58332
 import operator 
 from operator import itemgetter
 from sklearn.metrics import accuracy_score
 
 class kNearestNeighborsClassifier:
+<<<<<<< HEAD
     def preprocessData(self):
         #data
+=======
+
+    # def __init__( self, legalLabels, k=10):
+    #     self.legalLabels = legalLabels
+    #     self.type = "knnClassifier"
+    #     self.k = k
+    #     self.weights = {}
+          
+    def preprocessData(self, trainingNumber):
+        
+
+>>>>>>> 533a4092bd448d3ddf71987ded1b0a5009f58332
         txt_file = open("KNN_DATA/traindata_digits_preprocessed.txt", "r")
         new_file_content = txt_file.read()
         main_list = ast.literal_eval(new_file_content)
@@ -19,11 +38,26 @@ class kNearestNeighborsClassifier:
         #labels
         label_txt_file = open("KNN_DATA/traininglabels", "r")
         label_file_content = label_txt_file.read()
+<<<<<<< HEAD
         label_file_content=label_file_content.split('\n')
+=======
+        label_file_content = label_file_content.split('\n')
+        #label_file_content = ast.literal_eval(label_file_content)
+
+        #file_content = [n for n in file_content]
+        #file_content
+
+>>>>>>> 533a4092bd448d3ddf71987ded1b0a5009f58332
         label_list = ' '.join(label_file_content).split()
         for i in range(len(label_list)):
             label_list[i]=int(label_list[i])
 
+        merged = list(map(lambda x, y:(x,y), main_list, label_list))
+        random.shuffle(merged)
+        main_list,label_list=[],[]
+        for i in range(trainingNumber):
+            main_list.append(merged[i][0])
+            label_list.append(merged[i][1])
         
         # TESTDATA
         txt_file = open("KNN_DATA/testdata_digits_preprocessed.txt", "r")
@@ -45,8 +79,17 @@ class kNearestNeighborsClassifier:
         x=0
         some_digit = test_main_list[x]
         some_digit_image = some_digit.reshape(28, 28)
+<<<<<<< HEAD
         plt.imshow(some_digit_image, cmap=matplotlib.cm.binary)
         plt.show()
+=======
+        # uncomment later
+        # plt.imshow(some_digit_image, cmap=matplotlib.cm.binary)
+        #plt.axis(“off”)
+
+        # uncomment later
+        # plt.show()
+>>>>>>> 533a4092bd448d3ddf71987ded1b0a5009f58332
         print(" ")
         print("Actual Value: "+str(test_label_list[x]))
 
@@ -61,8 +104,13 @@ class kNearestNeighborsClassifier:
         y_test = test_label_list[:100]
 
 
+<<<<<<< HEAD
         kVals = np.arange(3,100,2)
         accuracy_list = []
+=======
+        kVals = np.arange(3,9,2)
+        accuracies = []
+>>>>>>> 533a4092bd448d3ddf71987ded1b0a5009f58332
         for k in kVals:
             model = KNN(K = k)
             model.fit(X_train, y_train)
@@ -83,9 +131,12 @@ class kNearestNeighborsClassifier:
         x=67
         some_digit = test_main_list[x]
         some_digit_image = some_digit.reshape(28, 28)
-        plt.imshow(some_digit_image, cmap=matplotlib.cm.binary)
+        # uncomment later
+        # plt.imshow(some_digit_image, cmap=matplotlib.cm.binary)
         #plt.axis(“off”)
-        plt.show()
+
+        # uncomment later
+        # plt.show()
         print(" ")
         print("Actual Value: "+str(test_label_list[x]))
         print("Predicted Value: "+str(pred[x]))
@@ -95,7 +146,7 @@ class kNearestNeighborsClassifier:
         plt.xlabel("K Value") 
         plt.ylabel("Accuracy")
 
-        return str(max_index*2+3), acc
+        return acc, 0
 
 class KNN:
     def __init__(self, K=3):
