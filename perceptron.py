@@ -20,13 +20,13 @@ class PerceptronClassifier:
             print ("Starting iteration ", iteration, "...")
             for i in range(len(trainingData)):
               "*** YOUR CODE HERE ***" 
-              #y_value = self.classify([trainingData[i]])[0]
+              y_value = self.classify([trainingData[i]])[0]
 
 
-              if self.classify([trainingData[i]])[0] != trainingLabels[i]:
+              if y_value != trainingLabels[i]:
                 #weights vector adjustment
                   self.weights[trainingLabels[i]] += trainingData[i] # encourage the actual answer : add weight phi to weight vector 
-                  self.weights[self.classify([trainingData[i]])[0]] -= trainingData[i] #punish the incorrect guess's  weight vector
+                  self.weights[y_value] -= trainingData[i] #punish the incorrect guess's  weight vector
 
            
     def classify(self, data):
@@ -41,6 +41,10 @@ class PerceptronClassifier:
 
 
     def findHighWeightFeatures(self, label):
+        """
+        We get a list of 100 features with the highest weight
+        """
+        
         list_of_weights = []
 
         weight_values = self.weights[label]
@@ -48,6 +52,6 @@ class PerceptronClassifier:
         for i in range(100):
             curr_wt = weight_values.argMax()
             list_of_weights.append(curr_wt)
-            weight_values[curr_wt]=-9999999999
+            weight_values[curr_wt]=-99999999
 
         return list_of_weights
