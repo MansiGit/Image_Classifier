@@ -20,8 +20,8 @@ class PerceptronClassifier:
             for data_index in range(len(trainingData)): 
               y_value = self.classify([trainingData[data_index]])[0]
               if y_value != trainingLabels[data_index]:
-                  self.weights[trainingLabels[data_index]] = self.weights[trainingLabels[data_index]] + trainingData[data_index]  
-                  self.weights[y_value] = self.weights[y_value] - trainingData[data_index] 
+                  self.weights[trainingLabels[data_index]] += trainingData[data_index]  
+                  self.weights[y_value] -= trainingData[data_index] 
 
            
     def classify(self, data):
