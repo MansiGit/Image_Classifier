@@ -90,11 +90,11 @@ class kNearestNeighborsClassifier:
         some_digit = test_main_list[x]
         some_digit_image = some_digit.reshape(28, 28)
         # uncomment later
-        # plt.imshow(some_digit_image, cmap=matplotlib.cm.binary)
-        #plt.axis(“off”)
+        plt.imshow(some_digit_image, cmap=matplotlib.cm.binary)
+        plt.axis("off")
 
         # uncomment later
-        # plt.show()
+        plt.show()
         print(" ")
         print("Actual Value: "+str(test_label_list[x]))
         print("Predicted Value: "+str(pred[x]))

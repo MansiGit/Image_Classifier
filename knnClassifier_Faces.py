@@ -56,7 +56,7 @@ class kNearestNeighborsClassifier:
         some_digit = test_main_list[x]
         some_digit_image = some_digit.reshape(60, 70)
         plt.imshow(some_digit_image, cmap=matplotlib.cm.binary)
-        plt.axis(“off”)
+        plt.axis("off")
         plt.show()
         print(" ")
         print("Actual Value: "+str(test_label_list[x]))
@@ -73,16 +73,16 @@ class kNearestNeighborsClassifier:
 
 
         kVals = np.arange(3,107,2)
-        accuracies = []
+        accuracy_list = []
         for k in kVals:
             model = KNN(K = k)
             model.fit(X_train, y_train)
             pred = model.predict(X_test)
             acc = accuracy_score(y_test, pred)
-            accuracies.append(acc)
+            accuracy_list.append(acc)
             print("K = "+str(k)+"; Accuracy: "+str(acc))
 
-        max_index = accuracies.index(max(accuracies))
+        max_index = accuracy_list.index(max(accuracy_list))
         print(max_index)
 
         model = KNN(K = kVals[max_index])
@@ -96,7 +96,7 @@ class kNearestNeighborsClassifier:
         some_digit_image = some_digit.reshape(60, 70)
         # uncomment later
         plt.imshow(some_digit_image, cmap=matplotlib.cm.binary)
-        plt.axis(“off”)
+        plt.axis("off")
         # uncomment later
         plt.show()
         print(" ")
@@ -104,7 +104,7 @@ class kNearestNeighborsClassifier:
         print("Predicted Value: "+str(pred[x]))
 
 
-        plt.plot(kVals, accuracies) 
+        plt.plot(kVals, accuracy_list) 
         plt.xlabel("K Value") 
         plt.ylabel("Accuracy")
 
