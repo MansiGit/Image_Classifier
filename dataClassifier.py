@@ -350,7 +350,7 @@ def runClassifier(args, options):
   # if classifier == KNN
 
   if(options.classifier == "knnClassifier"):
-    accuracy, K = classifier.preprocessData()
+    accuracy, K = classifier.preprocessData(options.training)
     return accuracy, K
   else:
     # Conduct training and testing
@@ -397,34 +397,58 @@ if __name__ == '__main__':
   test_std_acc = []
 
   # currently checking only for 10% data
-  for i in range(1):
-    t += 450
+<<<<<<< HEAD
+  for i in range(2):
+=======
+  for i in range(10):
+>>>>>>> 533a4092bd448d3ddf71987ded1b0a5009f58332
+    t += 500
     # MAIN RUN : args, options = readCommand( sys.argv[1:] )
     validating_acc = []
     test_acc = []
+    bestK = []
 
-    for j in range(1):
+    for j in range(2):
       st=time.process_time()
-      args, options = readCommand(['-d','faces','-c','perceptron','-t', str(t),'-k','1','-f','-r'])
+      args, options = readCommand(['-d','digits','-c','knnClassifier','-t', str(t),'-k','1','-f','-r'])
+<<<<<<< HEAD
       #print(args)
       #print(options)
+=======
+      
+>>>>>>> 533a4092bd448d3ddf71987ded1b0a5009f58332
       correct1, correct2 = runClassifier(args, options)
       et=time.process_time()
       print("Time: ",et-st)
       validating_acc.append(correct1)
       test_acc.append(correct2)
 
-    validating_mean_acc.append(np.mean(validating_acc))
-    validating_std_acc.append(np.std(validating_acc))
-    test_mean_acc.append(np.mean(test_acc))
-    test_std_acc.append(np.std(test_acc))
+    print(validating_acc)
+    print(test_acc)
+    print(bestK)
+    isKnn = False
+    if(test_acc[0] == 0):
+      # knn
+      test_mean_acc.append(np.mean(validating_acc))
+      test_std_acc.append(np.std(validating_acc))
+      isKnn = True
+    else:
+      validating_mean_acc.append(np.mean(validating_acc))
+      validating_std_acc.append(np.std(validating_acc))
+      test_mean_acc.append(np.mean(test_acc))
+      test_std_acc.append(np.std(test_acc))
 
-  print("Validation : MEAN, STD")
-  print(validating_mean_acc)
-  print(validating_std_acc)
-  print("Testing : MEAN, STD")
-  print(test_mean_acc)
-  print(test_std_acc)
+  if(isKnn):
+    print("Testing : MEAN, STD")
+    print(test_mean_acc)
+    print(test_std_acc)
+  else:
+    print("Validation : MEAN, STD")
+    print(validating_mean_acc)
+    print(validating_std_acc)
+    print("Testing : MEAN, STD")
+    print(test_mean_acc)
+    print(test_std_acc)
       
 #python dataClassifier.py -c naiveBayes -d digits -t 1000 -f -o -1 3 -2 6 -k 2.5
 # runClassifier(args, options)

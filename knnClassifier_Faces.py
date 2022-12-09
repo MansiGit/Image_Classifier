@@ -1,28 +1,17 @@
-# KNN start
-
-
 import numpy as np
 import pandas as pd 
 import matplotlib.pyplot as plt
 import matplotlib
 import math
 import ast
-import numpy as np
-
+import random
 import operator 
 from operator import itemgetter
-from sklearn.metrics import precision_recall_fscore_support
 from sklearn.metrics import accuracy_score
 
 class kNearestNeighborsClassifier:
-
-    # def __init__( self, legalLabels, k=10):
-    #     self.legalLabels = legalLabels
-    #     self.type = "knnClassifier"
-    #     self.k = k
-    #     self.weights = {}
-          
-    def preprocessData(self):
+        
+    def preprocessData(self, trainingNumber):
         txt_file = open("KNN_DATA/traindata_faces_preprocessed.txt", "r")
         new_file_content = txt_file.read()
         main_list = ast.literal_eval(new_file_content)
@@ -32,17 +21,20 @@ class kNearestNeighborsClassifier:
         label_txt_file = open("KNN_DATA/facedatatrainlabels", "r")
         label_file_content = label_txt_file.read()
         label_file_content=label_file_content.split('\n')
-        #label_file_content = ast.literal_eval(label_file_content)
-
-        #file_content = [n for n in file_content]
-        #file_content
-
         label_list = ' '.join(label_file_content).split()
         for i in range(len(label_list)):
             label_list[i]=int(label_list[i])
 
         
 
+        merged = list(map(lambda x, y:(x,y), main_list, label_list))
+        random.shuffle(merged)
+        main_list,label_list=[],[]
+        for i in range(trainingNumber):
+            main_list.append(merged[i][0])
+            label_list.append(merged[i][1])
+
+        
         # TESTDATA
         txt_file = open("KNN_DATA/testdata_faces_preprocessed.txt", "r")
         new_file_content = txt_file.read()
@@ -64,7 +56,7 @@ class kNearestNeighborsClassifier:
         some_digit = test_main_list[x]
         some_digit_image = some_digit.reshape(60, 70)
         plt.imshow(some_digit_image, cmap=matplotlib.cm.binary)
-        #plt.axis(“off”)
+        plt.axis("off")
         plt.show()
         print(" ")
         print("Actual Value: "+str(test_label_list[x]))
@@ -81,16 +73,16 @@ class kNearestNeighborsClassifier:
 
 
         kVals = np.arange(3,107,2)
-        accuracies = []
+        accuracy_list = []
         for k in kVals:
             model = KNN(K = k)
             model.fit(X_train, y_train)
             pred = model.predict(X_test)
             acc = accuracy_score(y_test, pred)
-            accuracies.append(acc)
+            accuracy_list.append(acc)
             print("K = "+str(k)+"; Accuracy: "+str(acc))
 
-        max_index = accuracies.index(max(accuracies))
+        max_index = accuracy_list.index(max(accuracy_list))
         print(max_index)
 
         model = KNN(K = kVals[max_index])
@@ -102,17 +94,21 @@ class kNearestNeighborsClassifier:
         x=67
         some_digit = test_main_list[x]
         some_digit_image = some_digit.reshape(60, 70)
+        # uncomment later
         plt.imshow(some_digit_image, cmap=matplotlib.cm.binary)
-        #plt.axis(“off”)
+        plt.axis("off")
+        # uncomment later
         plt.show()
         print(" ")
         print("Actual Value: "+str(test_label_list[x]))
         print("Predicted Value: "+str(pred[x]))
 
 
-        plt.plot(kVals, accuracies) 
+        plt.plot(kVals, accuracy_list) 
         plt.xlabel("K Value") 
         plt.ylabel("Accuracy")
+
+        return acc, 0
 
 class KNN:
     def __init__(self, K=3):
@@ -120,12 +116,12 @@ class KNN:
     def fit(self, x_train, y_train):
         self.X_train = x_train
         self.Y_train = y_train
-    def euc_dist(x1, x2):
-        return np.sqrt(np.sum((x1-x2)**2))
+    def euclidean_dist(val1, val2):
+        return np.sqrt(np.sum((val1-val2)**2))
     def predict(self, X_test):
       predictions = [] 
       for i in range(len(X_test)):
-          dist = np.array([KNN.euc_dist(X_test[i], x_t) for x_t in self.X_train])
+          dist = np.array([KNN.euclidean_dist(X_test[i], x_t) for x_t in self.X_train])
           dist_sorted = dist.argsort()[:self.K]
           neigh_count = {}
           for idx in dist_sorted:
