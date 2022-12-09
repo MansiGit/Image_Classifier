@@ -26,9 +26,9 @@ class PerceptronClassifier:
            
     def classify(self, data):
         guesses = []
-        for d in data:
+        for dat in data:
             vectors = util.Counter()
             for l in self.legalLabels:
-                vectors[l] = self.weights[l] * d
+                vectors[l] = self.weights[l] * dat
             guesses.append(vectors.argMax())
         return guesses
