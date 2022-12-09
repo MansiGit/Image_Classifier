@@ -49,7 +49,7 @@ class PerceptronClassifier:
 
         weight_values = self.weights[label]
 
-        for i in range(200):
+        for i in range(300):
             curr_wt = weight_values.argMax()
             list_of_weights.append(curr_wt)
             weight_values[curr_wt]=-9999999999
