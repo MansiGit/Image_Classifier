@@ -341,12 +341,12 @@ def runClassifier(args, options):
       trainingData.append(merged[i][0])
       trainingLabels.append(merged[i][1])
 
-  # f = open("testdata_faces.txt", "a")
-  # f.write("\n,".join(str(item) for item in testData))
-  # f.close()
-  # f = open("traindata_faces.txt", "a")
-  # f.write('\n,'.join(str(item) for item in trainingData))
-  # f.close()
+  f = open("testdata_faces_simple.txt", "a")
+  f.write("\n,".join(str(item) for item in testData))
+  f.close()
+  f = open("traindata_faces_simple.txt", "a")
+  f.write('\n,'.join(str(item) for item in trainingData))
+  f.close()
   # if classifier == KNN
 
   if(options.classifier == "knnClassifier"):
@@ -403,7 +403,7 @@ if __name__ == '__main__':
     validating_acc = []
     test_acc = []
 
-    for j in range(5):
+    for j in range(1):
       st=time.process_time()
       args, options = readCommand(['-d','faces','-c','knnClassifier','-t', str(t),'-k','1','-f','-r'])
       #print(args)
