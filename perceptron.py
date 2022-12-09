@@ -1,5 +1,4 @@
 import util
-PRINT = True
 
 class PerceptronClassifier:
     def __init__( self, legalLabels, max_iterations):
@@ -11,52 +10,25 @@ class PerceptronClassifier:
             self.weights[label] = util.Counter() 
 
     def setWeights(self, weights):
-        assert len(weights) == len(self.legalLabels);
-        self.weights = weights;
+        assert len(weights) == len(self.legalLabels)
+        self.weights = weights
 
     def train( self, trainingData, trainingLabels, validationData, validationLabels ):
-        """
-        The training loop for the perceptron will pass through the specified training data multiple times and 
-        will update the weight vector for each label based on errors in classificattion
-        """
-        self.features = trainingData[0].keys() 
-
+        self.features = trainingData[0].keys()
         for iteration in range(self.max_iterations):
             print ("Starting iteration ", iteration, "...")
-            for i in range(len(trainingData)):
-              "*** YOUR CODE HERE ***" 
-              y_value = self.classify([trainingData[i]])[0]
-
-
-              if y_value != trainingLabels[i]:
-                #weights vector adjustment
-                  self.weights[trainingLabels[i]] += trainingData[i] # encourage the actual answer : add weight phi to weight vector 
-                  self.weights[y_value] -= trainingData[i] #punish the incorrect guess's  weight vector
+            for data_index in range(len(trainingData)): 
+              val_y = self.classify([trainingData[data_index]])[0]
+              if val_y != trainingLabels[data_index]:
+                  self.weights[trainingLabels[data_index]] = self.weights[trainingLabels[data_index]] + trainingData[data_index]  
+                  self.weights[val_y] = self.weights[val_y] - trainingData[data_index] 
 
            
-    def classify(self, data, prin = False):
+    def classify(self, data):
         guesses = []
-        for d in data:
+        for dat in data:
             vectors = util.Counter()
             for l in self.legalLabels:
-                vectors[l] = self.weights[l] * d
+                vectors[l] = self.weights[l] * dat
             guesses.append(vectors.argMax())
-
         return guesses
-
-
-    def findHighWeightFeatures(self, label):
-        """
-        We get a list of 100 features with the highest weight
-        """
-        
-        featuresWeights = []
-
-        weights = self.weights[label]
-
-        for i in range(100):
-            wt = weights.argMax()
-            featuresWeights.append(wt)
-            weights[wt]=-99999999
-
-        return featuresWeights
