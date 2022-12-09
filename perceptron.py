@@ -15,26 +15,21 @@ class PerceptronClassifier:
         self.weights = weights;
 
     def train( self, trainingData, trainingLabels, validationData, validationLabels ):
-        """
-        The training loop for the perceptron will pass through the specified training data multiple times and 
-        will update the weight vector for each label based on errors in classificattion
-        """
-        self.features = trainingData[0].keys() 
-
+        self.features = trainingData[0].keys()
         for iteration in range(self.max_iterations):
             print ("Starting iteration ", iteration, "...")
             for i in range(len(trainingData)):
               "*** YOUR CODE HERE ***" 
-              y_value = self.classify([trainingData[i]])[0]
+              #y_value = self.classify([trainingData[i]])[0]
 
 
-              if y_value != trainingLabels[i]:
+              if self.classify([trainingData[i]])[0] != trainingLabels[i]:
                 #weights vector adjustment
                   self.weights[trainingLabels[i]] += trainingData[i] # encourage the actual answer : add weight phi to weight vector 
-                  self.weights[y_value] -= trainingData[i] #punish the incorrect guess's  weight vector
+                  self.weights[self.classify([trainingData[i]])[0]] -= trainingData[i] #punish the incorrect guess's  weight vector
 
            
-    def classify(self, data, prin = False):
+    def classify(self, data):
         guesses = []
         for d in data:
             vectors = util.Counter()
@@ -46,17 +41,13 @@ class PerceptronClassifier:
 
 
     def findHighWeightFeatures(self, label):
-        """
-        We get a list of 100 features with the highest weight
-        """
-        
-        featuresWeights = []
+        list_of_weights = []
 
-        weights = self.weights[label]
+        weight_values = self.weights[label]
 
-        for i in range(100):
-            wt = weights.argMax()
-            featuresWeights.append(wt)
-            weights[wt]=-99999999
+        for i in range(200):
+            curr_wt = weight_values.argMax()
+            list_of_weights.append(curr_wt)
+            weight_values[curr_wt]=-9999999999
 
-        return featuresWeights
+        return list_of_weights
