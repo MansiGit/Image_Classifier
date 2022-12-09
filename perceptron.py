@@ -18,9 +18,11 @@ class PerceptronClassifier:
             print ("Starting iteration ", iteration, "...")
             for data_index in range(len(trainingData)): 
               val_y = self.classify([trainingData[data_index]])[0]
+              training_lab_curr=trainingLabels[data_index]
               if val_y != trainingLabels[data_index]:
-                  self.weights[trainingLabels[data_index]] = self.weights[trainingLabels[data_index]] + trainingData[data_index]  
-                  self.weights[val_y] = self.weights[val_y] - trainingData[data_index] 
+                curr_weight=self.weights
+                curr_weight[training_lab_curr] = curr_weight[training_lab_curr] + trainingData[data_index]  
+                curr_weight[val_y] = curr_weight[val_y] - trainingData[data_index]
 
     def classify(self, data):
         guesses = []
