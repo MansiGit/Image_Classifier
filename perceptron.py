@@ -20,13 +20,13 @@ class PerceptronClassifier:
             print ("Starting iteration ", iteration, "...")
             for i in range(len(trainingData)):
               "*** YOUR CODE HERE ***" 
-              #y_value = self.classify([trainingData[i]])[0]
+              y_value = self.classify([trainingData[i]])[0]
 
 
-              if self.classify([trainingData[i]])[0] != trainingLabels[i]:
+              if y_value != trainingLabels[i]:
                 #weights vector adjustment
                   self.weights[trainingLabels[i]] += trainingData[i] # encourage the actual answer : add weight phi to weight vector 
-                  self.weights[self.classify([trainingData[i]])[0]] -= trainingData[i] #punish the incorrect guess's  weight vector
+                  self.weights[y_value] -= trainingData[i] #punish the incorrect guess's  weight vector
 
            
     def classify(self, data):
