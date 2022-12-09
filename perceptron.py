@@ -18,10 +18,10 @@ class PerceptronClassifier:
         for iteration in range(self.max_iterations):
             print ("Starting iteration ", iteration, "...")
             for data_index in range(len(trainingData)): 
-              y_value = self.classify([trainingData[data_index]])[0]
-              if y_value != trainingLabels[data_index]:
-                  self.weights[trainingLabels[data_index]] += trainingData[data_index]  
-                  self.weights[y_value] -= trainingData[data_index] 
+              val_y = self.classify([trainingData[data_index]])[0]
+              if val_y != trainingLabels[data_index]:
+                  self.weights[trainingLabels[data_index]] = self.weights[trainingLabels[data_index]] + trainingData[data_index]  
+                  self.weights[val_y] = self.weights[val_y] - trainingData[data_index] 
 
            
     def classify(self, data):
@@ -32,15 +32,3 @@ class PerceptronClassifier:
                 vectors[l] = self.weights[l] * d
             guesses.append(vectors.argMax())
         return guesses
-
-
-    def findHighWeightFeatures(self, label):
-        list_of_weights = []
-        weight_values = self.weights[label]
-
-        for i in range(200):
-            curr_wt = weight_values.argMax()
-            list_of_weights.append(curr_wt)
-            weight_values[curr_wt]=-9999999999
-
-        return list_of_weights
