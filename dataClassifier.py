@@ -397,11 +397,7 @@ if __name__ == '__main__':
   test_std_acc = []
 
   # currently checking only for 10% data
-<<<<<<< HEAD
   for i in range(2):
-=======
-  for i in range(10):
->>>>>>> 533a4092bd448d3ddf71987ded1b0a5009f58332
     t += 500
     # MAIN RUN : args, options = readCommand( sys.argv[1:] )
     validating_acc = []
@@ -411,12 +407,8 @@ if __name__ == '__main__':
     for j in range(2):
       st=time.process_time()
       args, options = readCommand(['-d','digits','-c','knnClassifier','-t', str(t),'-k','1','-f','-r'])
-<<<<<<< HEAD
       #print(args)
       #print(options)
-=======
-      
->>>>>>> 533a4092bd448d3ddf71987ded1b0a5009f58332
       correct1, correct2 = runClassifier(args, options)
       et=time.process_time()
       print("Time: ",et-st)
