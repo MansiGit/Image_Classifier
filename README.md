@@ -12,7 +12,9 @@ Enhanced feature extration that improved accuracies of the models
 
 Accuracies : 
 96% Naive Bayes classifier 
+
 84% Perceptron classfier
+
 95% KNN classifier
 
 This project was completed as part of CS520, Rutgers University
