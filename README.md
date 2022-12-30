@@ -4,7 +4,7 @@
 
 Built a a naive Bayes classifier, a perceptron classifier and a KNN classifier to classify handwritten digits (OCR) and recognize faces. 
 ![image](https://user-images.githubusercontent.com/31558571/210028293-353c812d-2236-40cc-99ff-d1b874483804.png | width=100)
-![image](https://user-images.githubusercontent.com/31558571/210028305-1e966a38-1a91-4adf-9cca-77023b4b60e3.png | width=100))
+![image](https://user-images.githubusercontent.com/31558571/210028305-1e966a38-1a91-4adf-9cca-77023b4b60e3.png | width=100)
 
 ## Outcomes
 
